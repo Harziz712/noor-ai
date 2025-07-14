@@ -1,9 +1,10 @@
+import ChatPage from "@/components/chatpage";
 
 const Home = () => {
   return (
     <div>
-      <h1>Welcome to Noor AI</h1>
+      <ChatPage/>
     </div>
   );
 };
-  
+export default Home
