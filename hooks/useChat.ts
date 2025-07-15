@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Message } from "@/data/interfaces";
+import genAI from "@/lib/gemini";
+
 
 const useChats = () => {
   const [message, setMessage] = useState<string>("");
@@ -9,22 +11,23 @@ const useChats = () => {
   const sendMessage = async (newMessage: string) => {
     if (newMessage.trim() === "") return;
 
-    const now = () => new Date().toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-    });
+    const now = () =>
+      new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
 
+    // Add user message
     const userMessage: Message = {
       sender: "me",
       message: newMessage,
       time: now(),
       isMoneyTransfer: false,
     };
-
     setMessages((prev) => [...prev, userMessage]);
     setMessage("");
 
-    // 1. Show "typing..." message
+    // Show "typing..." loader
     setIsTyping(true);
     const typingMessage: Message = {
       sender: "bot",
@@ -34,29 +37,42 @@ const useChats = () => {
     };
     setMessages((prev) => [...prev, typingMessage]);
 
-    // 2. Simulate response after 1.5s
-    setTimeout(() => {
-      setIsTyping(false);
+    try {
+      // Set up Gemini model
+      const model = genAI.getGenerativeModel({ model: "gemini-pro" });
 
-      const aiReply: Message = {
-        sender: "bot",
-        message: generateBotReply(newMessage),
-        time: now(),
-        isMoneyTransfer: false,
-      };
+      // Send prompt
+      const result = await model.generateContent(newMessage);
+      const response = await result.response;
+      const text = response.text().trim();
 
+      // Replace "typing..." with actual reply
       setMessages((prev) => {
-        // Remove the "typing..." message before adding real reply
-        const withoutTyping = prev.filter(msg => msg.message !== "Typing...");
-        return [...withoutTyping, aiReply];
+        const withoutTyping = prev.filter((msg) => msg.message !== "Typing...");
+        return [
+          ...withoutTyping,
+          {
+            sender: "bot",
+            message: text || "Hmm... I couldn't understand that.",
+            time: now(),
+            isMoneyTransfer: false,
+          },
+        ];
       });
-    }, 1500);
-  };
+    } catch (err) {
+      console.error("Gemini error:", err);
+      setMessages((prev) => [
+        ...prev.filter((msg) => msg.message !== "Typing..."),
+        {
+          sender: "bot",
+          message: "Oops! Something went wrong.",
+          time: now(),
+          isMoneyTransfer: false,
+        },
+      ]);
+    }
 
-  const generateBotReply = (input: string): string => {
-    if (input.toLowerCase().includes("hello")) return "Hi there! 👋";
-    if (input.toLowerCase().includes("your name")) return "I'm Nooria, your AI assistant.";
-    return "That's interesting! Tell me more.";
+    setIsTyping(false);
   };
 
   return { message, setMessage, messages, sendMessage, isTyping };
