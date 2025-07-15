@@ -1,9 +1,9 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import ChatTitle from "./ui/ChatTitle";
-import ChatInput from "./ui/ChatInput";
 import ChatMessage from "./ui/ChatMessage";
+import ChatInput from "./ui/ChatInput";
 import { Menu } from "lucide-react";
 import useChats from "@/hooks/useChat";
 
@@ -15,6 +15,13 @@ const ChatPage: React.FC<ChatPageProps> = ({
   chatName = "Noor ai ",
 }) => {
   const { message, setMessage, messages, sendMessage } = useChats();
+
+  // 👇 Scroll to bottom ref
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
@@ -28,18 +35,19 @@ const ChatPage: React.FC<ChatPageProps> = ({
       />
 
       {/* Message wall */}
-<div className="flex-1 overflow-y-auto px-2 pt-4 pb-32">
-  {messages.map((msg, idx) => (
-    <ChatMessage
-      key={idx}
-      message={msg.message}
-      sender={msg.sender === "me" ? "me" : "bot"}
-      time={msg.time}
-      isTyping={msg.message === "Typing..."}
-    />
-  ))}
-</div>
-
+      <div className="flex-1 overflow-y-auto px-2 pt-4 pb-32">
+        {messages.map((msg, idx) => (
+          <ChatMessage
+            key={idx}
+            message={msg.message}
+            sender={msg.sender === "me" ? "me" : "bot"}
+            time={msg.time}
+            isTyping={msg.message === "Typing..."}
+          />
+        ))}
+        {/* 🔽 Scroll target */}
+        <div ref={scrollRef} />
+      </div>
 
       {/* Input */}
       <ChatInput

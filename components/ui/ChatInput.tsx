@@ -1,12 +1,12 @@
-import { Mic, Paperclip, Send } from "lucide-react";
-import React from "react";
+import { Paperclip, Mic, Send } from "lucide-react";
+import { useState } from "react";
 
-interface InputProp {
+type InputProp = {
   className?: string;
   message: string;
   setMessage: (msg: string) => void;
   sendMessage: (msg: string) => void;
-}
+};
 
 const ChatInput: React.FC<InputProp> = ({
   className,
@@ -14,6 +14,8 @@ const ChatInput: React.FC<InputProp> = ({
   setMessage,
   sendMessage,
 }) => {
+  const [isRecording, setIsRecording] = useState(false);
+
   const handleSend = () => {
     sendMessage(message);
   };
@@ -23,6 +25,29 @@ const ChatInput: React.FC<InputProp> = ({
       e.preventDefault();
       handleSend();
     }
+  };
+
+  const handleVoiceInput = () => {
+    if (!("webkitSpeechRecognition" in window)) {
+      alert("Speech recognition not supported in this browser.");
+      return;
+    }
+
+    const recognition = new (window as any).webkitSpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.onstart = () => setIsRecording(true);
+    recognition.onerror = () => setIsRecording(false);
+    recognition.onend = () => setIsRecording(false);
+
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setMessage(transcript);
+    };
+
+    recognition.start();
   };
 
   return (
@@ -43,7 +68,12 @@ const ChatInput: React.FC<InputProp> = ({
           className="flex-1 bg-transparent outline-none text-white placeholder-white/60 text-sm"
         />
 
-        <button className="text-white/70 hover:text-white">
+        <button
+          onClick={handleVoiceInput}
+          className={`text-white/70 hover:text-white ${
+            isRecording ? "animate-pulse text-green-400" : ""
+          }`}
+        >
           <Mic className="w-5 h-5" />
         </button>
       </div>
@@ -57,5 +87,3 @@ const ChatInput: React.FC<InputProp> = ({
     </div>
   );
 };
-
-export default ChatInput;
