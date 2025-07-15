@@ -2,9 +2,9 @@ import ChatPage from "@/components/chatpage";
 
 const Home = () => {
   return (
-    <div>
+    <main className=" ">
       <ChatPage/>
-    </div>
+    </main>
   );
 };
 export default Home
