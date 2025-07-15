@@ -87,3 +87,5 @@ const ChatInput: React.FC<InputProp> = ({
     </div>
   );
 };
+
+export default ChatInput;
