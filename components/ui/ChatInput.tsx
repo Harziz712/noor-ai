@@ -18,6 +18,13 @@ const ChatInput: React.FC<InputProp> = ({
     sendMessage(message);
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
   return (
     <div
       className={`flex items-center py-4 px-3 gap-2 w-full max-w-full bg-transparent backdrop-blur-sm ${className}`}
@@ -31,6 +38,7 @@ const ChatInput: React.FC<InputProp> = ({
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyDown={handleKeyDown}
           placeholder="Ask me anything..."
           className="flex-1 bg-transparent outline-none text-white placeholder-white/60 text-sm"
         />
