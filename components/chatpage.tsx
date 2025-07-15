@@ -3,8 +3,9 @@
 import React from "react";
 import ChatTitle from "./ui/ChatTitle";
 import ChatInput from "./ui/ChatInput";
+import ChatMessage from "./ui/ChatMessage";
 import { Menu } from "lucide-react";
-
+import useChats from "@/hooks/useChat";
 
 interface ChatPageProps {
   chatName?: string;
@@ -13,35 +14,42 @@ interface ChatPageProps {
 const ChatPage: React.FC<ChatPageProps> = ({
   chatName = "Noor ai ",
 }) => {
-
-
+  const { message, setMessage, messages, sendMessage } = useChats();
 
   return (
-    <main className="flex flex-col bg-yellow-200 h-screen relative">
+    <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
       <ChatTitle
-        title={ chatName }
-        action ={    <span className="h-[36px] w-[36px] flex justify-center items-center bg-blue-600/30 hover:bg-blue-600 rounded-full">
-          <Menu
-            className="cursor-pointer text-white  "
-            size={20}
-          />
-          </span>}
+        title={chatName}
+        action={
+          <span className="h-[36px] w-[36px] flex justify-center items-center bg-[#3d2072] hover:bg-[#5e2ea3] rounded-full transition">
+            <Menu className="cursor-pointer text-white" size={20} />
+          </span>
+        }
       />
 
+      {/* Message wall */}
+<div className="flex-1 overflow-y-auto px-2 pt-4 pb-32">
+  {messages.map((msg, idx) => (
+    <ChatMessage
+      key={idx}
+      message={msg.message}
+      sender={msg.sender === "me" ? "me" : "bot"}
+      time={msg.time}
+      isTyping={msg.message === "Typing..."}
+    />
+  ))}
+</div>
 
-      <ChatInput className=" absolute bottom-0 left-0 right-0" />
+
+      {/* Input */}
+      <ChatInput
+        className="absolute bottom-0 left-0 right-0"
+        message={message}
+        setMessage={setMessage}
+        sendMessage={sendMessage}
+      />
     </main>
   );
 };
 
 export default ChatPage;
-
-    //   <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4">
-    //     {ChatMessages.map((msg, index) => (
-    //       <React.Fragment key={index}>
-    //         {/* If you want to show a day divider, you can add logic here */}
-    //         {/* <ChatDayDivider day="Today" /> */}
-    //         <ChatMessage key={index} {...msg} />
-    //       </React.Fragment>
-    //     ))}
-    //   </div>

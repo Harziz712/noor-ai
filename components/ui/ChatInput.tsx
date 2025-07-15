@@ -1,42 +1,51 @@
-import useChats from "@/hooks/useChat";
 import { Mic, Paperclip, Send } from "lucide-react";
 import React from "react";
 
 interface InputProp {
   className?: string;
+  message: string;
+  setMessage: (msg: string) => void;
+  sendMessage: (msg: string) => void;
 }
 
-const ChatInput: React.FC = ({className}:InputProp) => {
-  const { message, setMessage, sendMessage } = useChats();
-
+const ChatInput: React.FC<InputProp> = ({
+  className,
+  message,
+  setMessage,
+  sendMessage,
+}) => {
   const handleSend = () => {
     sendMessage(message);
   };
 
   return (
-    <div className={`flex items-center py-2 px-2 gap-2 w-full max-w-full ${className}`}>
-      <div className="bg-shedding px-3 py-2 rounded-full w-full flex grid-cols-3 items-center bg-blue-600/70 hover:bg-blue-600 text-white">
-     <button className="text-paragraph col-span-1">
-          <Paperclip className="w-5 h-5 " />
+    <div
+      className={`flex items-center py-4 px-3 gap-2 w-full max-w-full bg-transparent backdrop-blur-sm ${className}`}
+    >
+      <div className="flex items-center gap-3 w-full rounded-full bg-[#3d2072] hover:bg-[#4c2d92] transition px-4 py-4">
+        <button className="text-white/70 hover:text-white">
+          <Paperclip className="w-5 h-5" />
         </button>
+
         <input
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
-          placeholder="Message"
-          className="flex-1 p-2 text-paragraph col-span-2 outline-none bg-transparent text-base"
+          placeholder="Ask me anything..."
+          className="flex-1 bg-transparent outline-none text-white placeholder-white/60 text-sm"
         />
-           <button className="text-white col-span-1">
+
+        <button className="text-white/70 hover:text-white">
           <Mic className="w-5 h-5" />
         </button>
       </div>
-        <button
-          onClick={handleSend}
-          className="bg-blue-600/70 hover:bg-blue-600 text-white rounded-full p-4"
-        >
-          <Send className="w-5 h-5" />
-        </button>
-   
+
+      <button
+        onClick={handleSend}
+        className="p-3 bg-[#5e2ea3] hover:bg-[#7741cb] rounded-full transition text-white"
+      >
+        <Send className="w-5 h-5" />
+      </button>
     </div>
   );
 };

@@ -14,8 +14,8 @@ const BackNav = ({
   const router = useRouter();
 
   return (
-    <header className="w-full flex gap-y-4 p-4 lg:flex-row items-center justify-between">
-        <span className="h-[36px] w-[36px] flex justify-center items-center bg-blue-600/30 hover:bg-blue-600 rounded-full">
+    <header className="w-full flex gap-y-4 p-4 lg:flex-row items-center justify-between bg-transparent backdrop-blur-sm">
+        <span className="h-[36px] w-[36px] flex justify-center items-center  bg-[#5e2ea3] hover:bg-[#7741cb] rounded-full">
           <ArrowLeft
             onClick={() => router.back()}
             className="cursor-pointer text-white  "
