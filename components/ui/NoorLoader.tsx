@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef } from "react";
 import { motion, useAnimation, useInView, AnimatePresence } from "framer-motion";
-import Image from "next/image";
+import { easeInOut } from "framer-motion"; 
 import ChatPage from "@/components/chatpage"; // Ensure this import path is correct
 
 const NoorLoader = () => {
@@ -38,7 +38,7 @@ const NoorLoader = () => {
       rotate: 360,
       transition: {
         duration: 2,
-        ease: "easeInOut",
+        ease: easeInOut,
         repeat: Infinity,
         repeatType: "mirror",
       },
@@ -50,7 +50,7 @@ const NoorLoader = () => {
     visible: { opacity: 1 },
     exit: {
       opacity: 0,
-      transition: { duration: 0.8, ease: "easeInOut" },
+      transition: { duration: 0.8, ease: easeInOut },
     },
   };
 
