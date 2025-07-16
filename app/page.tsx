@@ -13,7 +13,7 @@ const Home = () => {
   }, []);
 
   return (
-    <main className="bg-black min-h-screen">  
+    <main className="bg-black max-h-screen">  
       {isLoading ? <NoorLoader /> : <ChatPage />}
     </main>
   );
