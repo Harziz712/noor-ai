@@ -1,124 +1,99 @@
-import { Paperclip, Mic, Send } from "lucide-react";
-import { useRef, useState } from "react";
+"use client";
 
-type InputProp = {
+import useInput, { InputProp } from "@/hooks/useInput";
+import { Paperclip, Mic, Send } from "lucide-react";
+import React, { useEffect, useRef } from "react";
+
+interface ChatInputProps {
   className?: string;
   message: string;
   setMessage: (msg: string) => void;
   sendMessage: (msg: string) => void;
-};
+}
 
-const ChatInput: React.FC<InputProp> = ({
+const ChatInput = ({
   className,
   message,
   setMessage,
   sendMessage,
-}) => {
-  const [isRecording, setIsRecording] = useState(false);
+}: ChatInputProps) => {
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSend = () => {
-    sendMessage(message);
-  };
+  useEffect(() => {
+    inputRef.current?.focus(); // Auto-focus input on page load
+  }, []);
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
-  };
-
-  const handleVoiceInput = () => {
-    if (!("webkitSpeechRecognition" in window)) {
-      alert("Speech recognition not supported in this browser.");
-      return;
-    }
-
-    const recognition = new (window as any).webkitSpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = false;
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => setIsRecording(true);
-    recognition.onerror = () => setIsRecording(false);
-    recognition.onend = () => setIsRecording(false);
-
-    recognition.onresult = (event: any) => {
-      const transcript = event.results[0][0].transcript;
-      setMessage(transcript);
-    };
-
-    recognition.start();
-  };
-
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-  const file = event.target.files?.[0];
-  if (file) {
-    // You can convert the image to base64 or upload it to a server
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      setMessage(message + ` [Image Attached]`);
-      // Optional: you can pass this base64 to a sendImage(base64) function
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-const handlePaperclipClick = () => {
-  fileInputRef.current?.click();
-};
+  const {
+    isRecording,
+    inputMessage,
+   setInputMessage,
+    handleSend,
+    handleKeyDown,
+    handleVoiceInput,
+    fileInputRef,
+    handleFileUpload,
+    handlePaperclipClick,
+  } = useInput({ message, setMessage, sendMessage });
 
   return (
     <div
       className={`flex items-center py-4 px-3 gap-2 w-full max-w-full bg-transparent backdrop-blur-sm ${className}`}
     >
       <div className="flex items-center gap-3 w-full rounded-full bg-[#3d2072] hover:bg-[#4c2d92] transition px-4 py-4">
-      <button
-  type="button"
-  onClick={handlePaperclipClick}
-  className="text-white/70 hover:text-white"
->
-  <Paperclip className="w-5 h-5" />
-  <input
-    type="file"
-    accept="image/*"
-    ref={fileInputRef}
-    onChange={handleFileUpload}
-    className="hidden"
-  />
-</button>
+        {/* 📎 File Upload Button */}
+        <button
+          type="button"
+          onClick={handlePaperclipClick}
+          className="text-white/70 hover:text-white"
+        >
+          <Paperclip className="w-5 h-5" />
+          <input
+            type="file"
+            accept="image/*"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </button>
 
-
+        {/* 💬 Input Box */}
         <input
+          ref={inputRef}
           type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          value={inputMessage}
+          onChange={(e) => setInputMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Ask me anything..."
-          className="flex-1 bg-transparent outline-none text-white placeholder-white/60 text-sm"
+          placeholder={isRecording ? "Listening..." : "Ask me anything..."}
+          className={`flex-1 bg-transparent outline-none text-white text-sm placeholder-white/60 transition-all duration-300 ${
+            inputMessage ? "placeholder-opacity-0" : "placeholder-opacity-100"
+          }`}
         />
 
-       <button
-  onClick={handleVoiceInput}
-  className={`text-white/70 hover:text-white relative ${
-    isRecording ? "animate-bounce text-green-400" : ""
-  }`}
->
-  <Mic className="w-5 h-5" />
-  {isRecording && (
-    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-white animate-pulse">
-       Listening...
-    </span>
-  )}
-</button>
-
+        {/* 🎙️ Voice Button */}
+        <button
+          onClick={handleVoiceInput}
+          className={`text-white/70 hover:text-white relative ${
+            isRecording ? "animate-bounce text-green-400" : ""
+          }`}
+        >
+          <Mic className="w-5 h-5" />
+          {isRecording && (
+            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-white animate-pulse">
+              Listening...
+            </span>
+          )}
+        </button>
       </div>
 
+      {/* 📤 Send Button */}
       <button
         onClick={handleSend}
-        className="p-3 bg-[#5e2ea3] hover:bg-[#7741cb] rounded-full transition text-white"
+        disabled={!inputMessage.trim()}
+        className={`p-3 rounded-full transition text-white ${
+          inputMessage.trim()
+            ? "bg-[#5e2ea3] hover:bg-[#7741cb]"
+            : "bg-[#5e2ea3]/40 cursor-not-allowed"
+        }`}
       >
         <Send className="w-5 h-5" />
       </button>

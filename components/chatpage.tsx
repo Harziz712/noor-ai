@@ -30,16 +30,15 @@ const ChatPage: React.FC<ChatPageProps> = ({
   }, [messages]);
 
     useEffect(() => {
-    if (!isTitleUpdated) {
-      const userMsg = messages.find((msg) => msg.sender === "me");
-      if (userMsg) {
-        // Create a short title from the first user message
-        const newTitle = userMsg.message.split(" ").slice(0, 5).join(" ");
-        setTitle(newTitle );
-        setIsTitleUpdated(true);
-      }
+  if (!isTitleUpdated && messages.length > 0) {
+    const firstUserMessage = messages.find((msg) => msg.sender === "me");
+    if (firstUserMessage) {
+      const newTitle = firstUserMessage.message.split(" ").slice(0, 5).join(" ");
+      setTitle(newTitle.charAt(0).toUpperCase() + newTitle.slice(1)); // Capitalize first letter
+      setIsTitleUpdated(true);
     }
-  }, [messages, isTitleUpdated]);
+  }
+}, [messages, isTitleUpdated]);
 
   return (
     <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
