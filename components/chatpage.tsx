@@ -17,6 +17,8 @@ const ChatPage: React.FC<ChatPageProps> = ({
 }) => {
   const { message, setMessage, messages,showGreeting, setShowGreeting, sendMessage: originalSendMessage } = useChats();
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const [title, setTitle] = useState(chatName);
+  const [isTitleUpdated, setIsTitleUpdated] = useState(false);
 
   const sendMessage = (msg: string) => {
     if (showGreeting) setShowGreeting(false); // 👈 Hide greeting
@@ -27,10 +29,22 @@ const ChatPage: React.FC<ChatPageProps> = ({
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+    useEffect(() => {
+    if (!isTitleUpdated) {
+      const userMsg = messages.find((msg) => msg.sender === "me");
+      if (userMsg) {
+        // Create a short title from the first user message
+        const newTitle = userMsg.message.split(" ").slice(0, 5).join(" ");
+        setTitle(newTitle );
+        setIsTitleUpdated(true);
+      }
+    }
+  }, [messages, isTitleUpdated]);
+
   return (
     <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
-      <ChatTitle
-        title={chatName}
+    <ChatTitle
+        title={title}
         action={
           <span className="h-[36px] w-[36px] flex justify-center items-center bg-[#3d2072] hover:bg-[#5e2ea3] rounded-full transition">
             <Menu className="cursor-pointer text-white" size={20} />
@@ -42,7 +56,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
       <div className="flex-1 overflow-y-auto px-2 pt-4 pb-32">
 
    <MessageWall showGreeting={showGreeting}/>
-   
+
         {messages.map((msg, idx) => (
           <ChatMessage
             key={idx}
