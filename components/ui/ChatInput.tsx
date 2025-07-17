@@ -1,5 +1,5 @@
 import { Paperclip, Mic, Send } from "lucide-react";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 type InputProp = {
   className?: string;
@@ -50,14 +50,46 @@ const ChatInput: React.FC<InputProp> = ({
     recognition.start();
   };
 
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (file) {
+    // You can convert the image to base64 or upload it to a server
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      setMessage(message + ` [Image Attached]`);
+      // Optional: you can pass this base64 to a sendImage(base64) function
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+const handlePaperclipClick = () => {
+  fileInputRef.current?.click();
+};
+
   return (
     <div
       className={`flex items-center py-4 px-3 gap-2 w-full max-w-full bg-transparent backdrop-blur-sm ${className}`}
     >
       <div className="flex items-center gap-3 w-full rounded-full bg-[#3d2072] hover:bg-[#4c2d92] transition px-4 py-4">
-        <button className="text-white/70 hover:text-white">
-          <Paperclip className="w-5 h-5" />
-        </button>
+      <button
+  type="button"
+  onClick={handlePaperclipClick}
+  className="text-white/70 hover:text-white"
+>
+  <Paperclip className="w-5 h-5" />
+  <input
+    type="file"
+    accept="image/*"
+    ref={fileInputRef}
+    onChange={handleFileUpload}
+    className="hidden"
+  />
+</button>
+
 
         <input
           type="text"
@@ -68,14 +100,20 @@ const ChatInput: React.FC<InputProp> = ({
           className="flex-1 bg-transparent outline-none text-white placeholder-white/60 text-sm"
         />
 
-        <button
-          onClick={handleVoiceInput}
-          className={`text-white/70 hover:text-white ${
-            isRecording ? "animate-pulse text-green-400" : ""
-          }`}
-        >
-          <Mic className="w-5 h-5" />
-        </button>
+       <button
+  onClick={handleVoiceInput}
+  className={`text-white/70 hover:text-white relative ${
+    isRecording ? "animate-bounce text-green-400" : ""
+  }`}
+>
+  <Mic className="w-5 h-5" />
+  {isRecording && (
+    <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-white animate-pulse">
+      🎤 Listening...
+    </span>
+  )}
+</button>
+
       </div>
 
       <button
