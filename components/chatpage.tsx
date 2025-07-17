@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import ChatTitle from "./ui/ChatTitle";
 import ChatMessage from "./ui/ChatMessage";
 import ChatInput from "./ui/ChatInput";
 import { Menu } from "lucide-react";
 import useChats from "@/hooks/useChat";
+import MessageWall from "./ui/MessageWall";
 
 interface ChatPageProps {
   chatName?: string;
@@ -14,10 +15,13 @@ interface ChatPageProps {
 const ChatPage: React.FC<ChatPageProps> = ({
   chatName = "Noor ai ",
 }) => {
-  const { message, setMessage, messages, sendMessage } = useChats();
-
-  // 👇 Scroll to bottom ref
+  const { message, setMessage, messages,showGreeting, setShowGreeting, sendMessage: originalSendMessage } = useChats();
   const scrollRef = useRef<HTMLDivElement | null>(null);
+
+  const sendMessage = (msg: string) => {
+    if (showGreeting) setShowGreeting(false); // 👈 Hide greeting
+    originalSendMessage(msg);
+  };
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -36,6 +40,9 @@ const ChatPage: React.FC<ChatPageProps> = ({
 
       {/* Message wall */}
       <div className="flex-1 overflow-y-auto px-2 pt-4 pb-32">
+
+   <MessageWall showGreeting={showGreeting}/>
+   
         {messages.map((msg, idx) => (
           <ChatMessage
             key={idx}

@@ -7,6 +7,8 @@ const useChats = () => {
   const [message, setMessage] = useState<string>("");
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
+ const [showGreeting, setShowGreeting] = useState(true);
+  
 
 const sendMessage = async (newMessage: string) => {
   if (newMessage.trim() === "") return;
@@ -89,7 +91,7 @@ Always be helpful, respectful, and human-friendly.` },
   setIsTyping(false);
 };
 
-  return { message, setMessage, messages, sendMessage, isTyping };
+  return { message, setMessage, messages, sendMessage, isTyping ,showGreeting, setShowGreeting};
 };
 
 export default useChats;
