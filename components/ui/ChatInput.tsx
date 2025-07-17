@@ -109,7 +109,7 @@ const handlePaperclipClick = () => {
   <Mic className="w-5 h-5" />
   {isRecording && (
     <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-white animate-pulse">
-      🎤 Listening...
+       Listening...
     </span>
   )}
 </button>
