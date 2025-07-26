@@ -7,6 +7,7 @@ import ChatInput from "./ui/ChatInput";
 import { Menu } from "lucide-react";
 import useChats from "@/hooks/useChat";
 import MessageWall from "./ui/MessageWall";
+import ChatSuggestions from "./ui/ChatInputSuggestions";
 
 interface ChatPageProps {
   chatName?: string;
@@ -19,10 +20,12 @@ const ChatPage: React.FC<ChatPageProps> = ({
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [title, setTitle] = useState(chatName);
   const [isTitleUpdated, setIsTitleUpdated] = useState(false);
+  const [showSuggestions, setShowSuggestions] = useState(true); 
 
   const sendMessage = (msg: string) => {
-    if (showGreeting) setShowGreeting(false); // 👈 Hide greeting
-    originalSendMessage(msg);
+  if (showGreeting) setShowGreeting(false);
+      setShowSuggestions(false); 
+      originalSendMessage(msg);
   };
 
   useEffect(() => {
@@ -69,13 +72,30 @@ const ChatPage: React.FC<ChatPageProps> = ({
         <div ref={scrollRef} />
       </div>
 
-      {/* Input */}
-      <ChatInput
-        className="absolute bottom-0 left-0 right-0"
-        message={message}
-        setMessage={setMessage}
-        sendMessage={sendMessage}
-      />
+    {/* Suggestions */}
+<ChatSuggestions
+  visible={showSuggestions && message.length === 0}
+  onSuggestionClick={(text) => {
+    setMessage(text)
+    setShowSuggestions(false)
+  }}
+/>
+
+{/* Input */}
+<ChatInput
+  className="absolute bottom-0 left-0 right-0"
+  message={message}
+  setMessage={(val) => {
+    setMessage(val)
+    if (val.length > 0) {
+      setShowSuggestions(false)
+    } else {
+      setShowSuggestions(true)
+    }
+  }}
+  sendMessage={sendMessage}
+/>
+
     </main>
   );
 };
