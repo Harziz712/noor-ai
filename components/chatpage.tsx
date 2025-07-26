@@ -94,7 +94,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
       />
 
       {/* Message wall */}
-      <div className="flex-1 px-2 pb-24 ">
+      <div className="flex-1 px-2 md:pb-24 ">
         <MessageWall showGreeting={showGreeting} />
 
         {messages.map((msg, idx) => (
@@ -107,7 +107,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
           />
         ))}
         <div className="w-full flex justify-center">
-          <div className="pt-20 md:pt-50 w-[50%]">
+          <div className=" md:pt-50 md:w-[50%]">
             <ChatSuggestions
               visible={showSuggestions && message.length === 0}
               onSuggestionClick={(text) => {
