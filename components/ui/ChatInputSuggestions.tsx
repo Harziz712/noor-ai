@@ -5,6 +5,7 @@ import React from 'react'
 interface ChatSuggestionsProps {
   onSuggestionClick: (text: string) => void
   visible: boolean
+  className?:string
 }
 
 const suggestions = [
@@ -23,11 +24,12 @@ const suggestions = [
 const ChatSuggestions: React.FC<ChatSuggestionsProps> = ({
   onSuggestionClick,
   visible,
+  className
 }) => {
   if (!visible) return null
 
   return (
-    <div className="flex flex-wrap gap-2 px-4 pb-2 animate-fade-in">
+    <div className={`flex flex-wrap gap-2 px-4 pb-2 animate-fadeIn ${className}`}>
       {suggestions.map((item) => (
         <button
           key={item}

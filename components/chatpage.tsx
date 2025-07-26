@@ -45,7 +45,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
 
   return (
     <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
-    <ChatTitle
+      <ChatTitle
         title={title}
         action={
           <span className="h-[36px] w-[36px] flex justify-center items-center bg-[#3d2072] hover:bg-[#5e2ea3] rounded-full transition">
@@ -55,9 +55,8 @@ const ChatPage: React.FC<ChatPageProps> = ({
       />
 
       {/* Message wall */}
-      <div className="flex-1 overflow-y-auto px-2 pt-4 pb-32">
-
-   <MessageWall showGreeting={showGreeting}/>
+      <div className="flex-1 px-2 pb-24 ">
+        <MessageWall showGreeting={showGreeting} />
 
         {messages.map((msg, idx) => (
           <ChatMessage
@@ -68,34 +67,37 @@ const ChatPage: React.FC<ChatPageProps> = ({
             isTyping={msg.message === "Typing..."}
           />
         ))}
+        <div className="w-full flex justify-center">
+          <div className="pt-20 md:pt-50 w-[50%]">
+            <ChatSuggestions
+              visible={showSuggestions && message.length === 0}
+              onSuggestionClick={(text) => {
+                setMessage(text)
+                setShowSuggestions(false)
+              }}
+              className="text-center justify-center "
+            />
+          </div>
+        </div>
+
         {/* 🔽 Scroll target */}
         <div ref={scrollRef} />
       </div>
 
-    {/* Suggestions */}
-<ChatSuggestions
-  visible={showSuggestions && message.length === 0}
-  onSuggestionClick={(text) => {
-    setMessage(text)
-    setShowSuggestions(false)
-  }}
-/>
-
-{/* Input */}
-<ChatInput
-  className="absolute bottom-0 left-0 right-0"
-  message={message}
-  setMessage={(val) => {
-    setMessage(val)
-    if (val.length > 0) {
-      setShowSuggestions(false)
-    } else {
-      setShowSuggestions(true)
-    }
-  }}
-  sendMessage={sendMessage}
-/>
-
+      {/* Input */}
+      <ChatInput
+        className="absolute bottom-0 left-0 right-0"
+        message={message}
+        setMessage={(val) => {
+          setMessage(val)
+          if (val.length > 0) {
+            setShowSuggestions(false)
+          } else {
+            setShowSuggestions(true)
+          }
+        }}
+        sendMessage={sendMessage}
+      />
     </main>
   );
 };
