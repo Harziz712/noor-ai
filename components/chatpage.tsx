@@ -8,7 +8,14 @@ import { Menu } from "lucide-react";
 import useChats from "@/hooks/useChat";
 import MessageWall from "./ui/MessageWall";
 import ChatSuggestions from "./ui/ChatInputSuggestions";
-
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from"./ui/sheet";
 interface ChatPageProps {
   chatName?: string;
 }
@@ -48,9 +55,41 @@ const ChatPage: React.FC<ChatPageProps> = ({
       <ChatTitle
         title={title}
         action={
-          <span className="h-[36px] w-[36px] flex justify-center items-center bg-[#3d2072] hover:bg-[#5e2ea3] rounded-full transition">
-            <Menu className="cursor-pointer text-white" size={20} />
-          </span>
+<Sheet>
+  <SheetTrigger asChild>
+    <span className="h-9 w-9 flex items-center justify-center bg-[#3d2072] hover:bg-[#5e2ea3] rounded-full transition-colors duration-200 cursor-pointer shadow-md">
+      <Menu className="text-white" size={20} />
+    </span>
+  </SheetTrigger>
+
+  <SheetContent
+    side="left"
+    className="w-[300px] sm:w-[400px] bg-[#1f0932] text-white border-none shadow-xl"
+  >
+    <SheetHeader>
+      <SheetTitle className="text-lg font-semibold tracking-wide text-white">
+        Chats
+      </SheetTitle>
+      <SheetDescription className="text-sm text-white/60">
+        Your recent conversations
+      </SheetDescription>
+    </SheetHeader>
+
+    <div className="mt-6 space-y-3">
+      <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
+        Noor Chat
+      </div>
+      <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
+        Support Chat
+      </div>
+      <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
+        AI Assistant
+      </div>
+    </div>
+  </SheetContent>
+</Sheet>
+
+
         }
       />
 
