@@ -94,7 +94,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
       />
 
       {/* Message wall */}
-      <div className="flex-1 px-2 md:pb-24 ">
+      <div className="flex-1 px-2 md:pb-24 bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700 h-screen overflow-auto ">
         <MessageWall showGreeting={showGreeting} />
 
         {messages.map((msg, idx) => (
@@ -125,7 +125,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
 
       {/* Input */}
       <ChatInput
-        className="absolute bottom-0 left-0 right-0"
+        className="fixed bottom-0 left-0 right-0"
         message={message}
         setMessage={(val) => {
           setMessage(val)
