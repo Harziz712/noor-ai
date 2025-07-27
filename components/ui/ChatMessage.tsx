@@ -34,7 +34,7 @@ const ChatMessage: React.FC<ChatMessageProps> = ({
         className={`relative max-w-[75%] rounded-2xl px-4 py-3 text-sm   ${
           isMe
             ? "bg-[#5e2ea3] text-white rounded-br-none"
-            : "bg-[#2f185b] text-white/90 rounded-bl-none"
+            : " text-white/90 rounded-bl-none"
         }`}
       >
   
