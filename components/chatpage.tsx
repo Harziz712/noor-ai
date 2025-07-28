@@ -77,13 +77,7 @@ const ChatPage: React.FC<ChatPageProps> = ({
 
     <div className="mt-6 space-y-3">
       <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
-        Noor Chat
-      </div>
-      <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
-        Support Chat
-      </div>
-      <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
-        AI Assistant
+        {title}
       </div>
     </div>
   </SheetContent>
