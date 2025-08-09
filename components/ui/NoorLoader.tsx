@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import { motion, useAnimation, useInView, AnimatePresence } from "framer-motion";
 import { easeInOut } from "framer-motion"; 
-import ChatPage from "@/components/chatpage"; // Ensure this import path is correct
 
 const NoorLoader = () => {
   const controls = useAnimation();
@@ -27,11 +26,7 @@ const NoorLoader = () => {
   }, [isInView, controls]);
 
   const logoVariants = {
-    initial: {
-      opacity: 0,
-      scale: 0.8,
-      rotate: 0,
-    },
+    initial: { opacity: 0, scale: 0.8, rotate: 0 },
     animate: {
       opacity: 1,
       scale: 1,
@@ -48,15 +43,12 @@ const NoorLoader = () => {
   const containerVariants = {
     hidden: { opacity: 1 },
     visible: { opacity: 1 },
-    exit: {
-      opacity: 0,
-      transition: { duration: 0.8, ease: easeInOut },
-    },
+    exit: { opacity: 0, transition: { duration: 0.8, ease: easeInOut } },
   };
 
   return (
     <AnimatePresence mode="wait">
-      {isLoading ? (
+      {isLoading && (
         <motion.div
           ref={ref}
           key="loader"
@@ -70,13 +62,9 @@ const NoorLoader = () => {
             className="w-32 h-32 drop-shadow-2xl"
             variants={logoVariants}
             initial="initial"
-            animate={controls}>
-            <img
-              src="/NoorLogo.png"
-              alt="Noor AI Loader"
-              width={128}
-              height={128}
-            />
+            animate={controls}
+          >
+            <img src="/NoorLogo.png" alt="Noor AI Loader" width={128} height={128} />
           </motion.div>
           <motion.p
             className="text-white mt-6 text-sm tracking-wide opacity-80"
@@ -86,15 +74,6 @@ const NoorLoader = () => {
           >
             Noor AI is thinking...
           </motion.p>
-        </motion.div>
-      ) : (
-        <motion.div
-          key="chat"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          <ChatPage />
         </motion.div>
       )}
     </AnimatePresence>

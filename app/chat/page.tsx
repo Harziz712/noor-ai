@@ -1,21 +1,15 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
-import ChatTitle from "./ui/ChatTitle";
-import ChatMessage from "./ui/ChatMessage";
-import ChatInput from "./ui/ChatInput";
-import { Menu } from "lucide-react";
+import ChatInput from "@/components/ui/ChatInput";
+import ChatSuggestions from "@/components/ui/ChatInputSuggestions";
+import ChatMessage from "@/components/ui/ChatMessage";
+import ChatTitle from "@/components/ui/ChatTitle";
+import MessageWall from "@/components/ui/MessageWall";
+import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import useChats from "@/hooks/useChat";
-import MessageWall from "./ui/MessageWall";
-import ChatSuggestions from "./ui/ChatInputSuggestions";
-import {
-  Sheet,
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from"./ui/sheet";
+import { Sheet, Menu } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+
 interface ChatPageProps {
   chatName?: string;
 }
