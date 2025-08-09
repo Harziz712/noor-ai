@@ -18,7 +18,7 @@ const Home = () => {
 
   useEffect(() => {
     if (!loading && user) {
-      router.push("/chat");
+      router.push("/dashboard");
     }
   }, [loading, user, router]);
 

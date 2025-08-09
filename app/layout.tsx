@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthProvider";
 import { Toaster } from "sonner";
+import { Dialog } from "@radix-ui/react-dialog";
 
 
 const geistSans = Geist({
@@ -31,8 +32,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <AuthProvider >
-          {children}
+          <Dialog>
+             {children}
+          </Dialog>
+         
         </AuthProvider>
+        
         <Toaster/>
       </body>
     </html>
