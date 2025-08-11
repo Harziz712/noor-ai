@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuth from "@/hooks/useAuth";
 import NoorLoader from "@/components/ui/NoorLoader";
-import Auth from "@/components/Auth/Auth";
+import Auth from "./Auth/Auth";
 
 const Home = () => {
   const { user, loading } = useAuth();
