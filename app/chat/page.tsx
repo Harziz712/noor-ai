@@ -10,8 +10,8 @@ import useChats from "@/hooks/useChat";
 import { Sheet, Menu } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
-export default function ChatPage({ params }: { params: { chatName?: string } }) {
-  const chatName = params.chatName ?? "Noor ai";
+export default function ChatPage() {
+  const chatName = "Noor ai";
   const { message, setMessage, messages, showGreeting, setShowGreeting, sendMessage: originalSendMessage } = useChats();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [title, setTitle] = useState(chatName);
