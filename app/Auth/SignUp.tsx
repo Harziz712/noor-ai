@@ -1,15 +1,17 @@
 "use client";
 
-import supabase from '@/lib/supabase';
-import React, { useState } from 'react';
+import OtpInput from "@/components/OtpInput";
+import supabase from "@/lib/supabase";
+import React, { useState } from "react";
 import { toast } from "sonner";
 
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState<'signup' | 'verify'>('signup');
-  const [email, setEmail] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [password, setPassword] = useState('');
+  const [step, setStep] = useState<"signup" | "verify">("signup");
+  const [email, setEmail] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
 
   // Step 1: Signup
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -35,14 +37,13 @@ const SignUp = () => {
     }
 
     // Create the user (no auto login, just send OTP email)
-const { error } = await supabase.auth.signUp({
-  email: emailValue,
-  password: pass,
-  options: {
-    emailRedirectTo: undefined, // ✅ fix
-  },
-});
-
+    const { error } = await supabase.auth.signUp({
+      email: emailValue,
+      password: pass,
+      options: {
+        emailRedirectTo: undefined, // no redirect
+      },
+    });
 
     if (error) {
       toast.error(error.message || "Signup failed. Please try again");
@@ -63,13 +64,16 @@ const { error } = await supabase.auth.signUp({
     e.preventDefault();
     setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const otp = formData.get("otp") as string;
+    if (!otp || otp.length !== 6) {
+      toast.error("Please enter the 6-digit OTP");
+      setLoading(false);
+      return;
+    }
 
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token: otp,
-      type: "email", // ✅ correct type for OTP emails
+      type: "signup", // ✅ correct type for email sign-up OTP
     });
 
     if (error) {
@@ -102,9 +106,9 @@ const { error } = await supabase.auth.signUp({
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-50">
+    <div className="flex items-center justify-center bg-gray-50 min-h-screen">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
-        <h2 className=" text-center text-2xl font-extrabold text-gray-900">
+        <h2 className="text-center text-2xl font-extrabold text-gray-900">
           {step === "signup" ? "Create your account" : "Verify your email"}
         </h2>
 
@@ -146,12 +150,7 @@ const { error } = await supabase.auth.signUp({
           </form>
         ) : (
           <form className="mt-8 space-y-6" onSubmit={handleVerifyOtp}>
-            <input
-              type="text"
-              name="otp"
-              className="w-full px-3 py-2 border rounded-md"
-              placeholder="Enter OTP"
-            />
+            <OtpInput length={6} onChange={(code) => setOtp(code)} />
             <button
               type="submit"
               disabled={loading}
