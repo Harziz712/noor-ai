@@ -1,5 +1,6 @@
 "use client";
 
+import useUser from "@/hooks/useUser";
 import ChatInput from "@/components/ui/ChatInput";
 import ChatSuggestions from "@/components/ui/ChatInputSuggestions";
 import ChatMessage from "@/components/ui/ChatMessage";
@@ -13,6 +14,7 @@ import React, { useEffect, useRef, useState } from "react";
 export default function ChatPage() {
   const chatName = "Noor ai";
   const { message, setMessage, messages, showGreeting, setShowGreeting, sendMessage: originalSendMessage } = useChats();
+  const { user, loading } = useUser();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [title, setTitle] = useState(chatName);
   const [isTitleUpdated, setIsTitleUpdated] = useState(false);
@@ -39,10 +41,12 @@ export default function ChatPage() {
     }
   }, [messages, isTitleUpdated]);
 
+  if (loading) return <p>Loading...</p>;
+
   return (
     <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
       <ChatTitle
-        title={title}
+        title={`${title}`}
         action={
           <Sheet>
             <SheetTrigger asChild>
@@ -72,8 +76,8 @@ export default function ChatPage() {
         }
       />
 
-      <div className="flex-1 px-2 pb-24 bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700 h-screen overflow-auto">
-        <MessageWall showGreeting={showGreeting} />
+      <div className="flex-1 px-2 pb-24 h-screen overflow-auto">
+        <MessageWall showGreeting={showGreeting} user={`${user?.user_metadata?.full_name || user?.email}`}/>
         {messages.map((msg, idx) => (
           <ChatMessage
             key={idx}

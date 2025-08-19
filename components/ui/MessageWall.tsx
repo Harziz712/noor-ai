@@ -2,9 +2,10 @@ import React from 'react'
 
 interface MessagewallProp{
     showGreeting: boolean;
+    user:string;
 }
 
-const MessageWall = ({showGreeting}:MessagewallProp) => {
+const MessageWall = ({showGreeting, user}:MessagewallProp) => {
   return (
           <div className="flex-1 overflow-y-auto px-2 pt-4 pb-32">
         {showGreeting && (
@@ -15,7 +16,7 @@ const MessageWall = ({showGreeting}:MessagewallProp) => {
               className="w-10 h-10 rounded-full object-cover"
             />
             <div className="text-sm leading-snug">
-              <p className="font-medium">Hello Azeez,</p>
+              <p className="font-medium">Hello {user},</p>
               <p className="text-white/80">How is your day going?</p>
             </div>
           </div>
