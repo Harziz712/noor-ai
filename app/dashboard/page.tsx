@@ -14,7 +14,7 @@ export default function Dashboard() {
             toast.error("Failed to log out, please try again.");
         } else {
             toast.success("Logged out successfully.");
-            router.push('/Auth/login');// Redirect to login
+            router.push('/');// Redirect to login
         }
     };
 
