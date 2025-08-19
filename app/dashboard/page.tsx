@@ -11,27 +11,20 @@ export default function Dashboard() {
     const [fullName, setFullName] = useState<string | null>(null);
 
     useEffect(() => {
-        const fetchUserProfile = async () => {
-            const { data: { user }, error } = await supabase.auth.getUser();
+        const fetchUser = async () => {
+            const { data, error } = await supabase.auth.getUser();
 
-            if (error || !user) {
+            if (error || !data.user) {
                 router.push('/'); // if no user, redirect to login
                 return;
             }
 
-            // Fetch profile info from "profiles" table
-            const { data: profile } = await supabase
-                .from('profiles')
-                .select('full_name')
-                .eq('id', user.id)
-                .single();
-
-            if (profile) {
-                setFullName(profile.full_name);
-            } 
+            // Grab from metadata (this is where your "Harziiz" is stored)
+            const name = data.user.user_metadata?.full_name || data.user.email;
+            setFullName(name);
         };
 
-        fetchUserProfile();
+        fetchUser();
     }, [router]);
 
     const handleLogout = async () => {
