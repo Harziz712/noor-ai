@@ -42,6 +42,7 @@ const SignUp = () => {
       password: pass,
       options: {
         emailRedirectTo: undefined, // no redirect
+        data: { full_name: username }, // store username in user metadata
       },
     });
 
@@ -106,7 +107,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-50 min-h-screen">
+    <div className="flex items-center justify-center bg-gray-50 ">
       <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
         <h2 className="text-center text-2xl font-extrabold text-gray-900">
           {step === "signup" ? "Create your account" : "Verify your email"}
