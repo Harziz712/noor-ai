@@ -6,16 +6,9 @@ import ChatSuggestions from "@/components/ui/ChatInputSuggestions";
 import ChatMessage from "@/components/ui/ChatMessage";
 import ChatTitle from "@/components/ui/ChatTitle";
 import MessageWall from "@/components/ui/MessageWall";
-import {
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
 import useChats from "@/hooks/useChat";
-import { Sheet, Menu } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
+import ChatSidebar from "@/components/ui/ChatSidebar";
 
 export default function ChatPage() {
   const {
@@ -31,6 +24,29 @@ export default function ChatPage() {
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [showSuggestions, setShowSuggestions] = useState(true);
 
+  const [chats, setChats] = useState([
+    { id: "1", title: "First Chat" },
+    { id: "2", title: "Second Chat" },
+  ]);
+  const [activeChatId, setActiveChatId] = useState<string | null>("1");
+
+  const handleNewChat = () => {
+    const newChat = {
+      id: Date.now().toString(),
+      title: chatTitle,
+    };
+    setChats((prev) => [newChat, ...prev]);
+    setActiveChatId(newChat.id);
+  };
+
+    const handleDeleteChat = (id: string) => {
+    setChats((prev) => prev.filter((chat) => chat.id !== id));
+    if (activeChatId === id) {
+      setActiveChatId(chats.length > 1 ? chats[0].id : null);
+    }
+  };
+
+
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -43,31 +59,13 @@ export default function ChatPage() {
       <ChatTitle
         title={chatTitle} // 👈 now AI sets it
         action={
-          <Sheet>
-            <SheetTrigger asChild>
-              <span className="h-9 w-9 flex items-center justify-center bg-[#3d2072] hover:bg-[#5e2ea3] rounded-full transition-colors duration-200 cursor-pointer shadow-md">
-                <Menu className="text-white" size={20} />
-              </span>
-            </SheetTrigger>
-            <SheetContent
-              side="left"
-              className="w-[300px] sm:w-[400px] bg-[#1f0932] text-white border-none shadow-xl"
-            >
-              <SheetHeader>
-                <SheetTitle className="text-lg font-semibold tracking-wide text-white">
-                  Chats
-                </SheetTitle>
-                <SheetDescription className="text-sm text-white/60">
-                  Your recent conversations
-                </SheetDescription>
-              </SheetHeader>
-              <div className="mt-6 space-y-3">
-                <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
-                  {chatTitle}
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+         <ChatSidebar
+            chats={chats}
+            activeChatId={activeChatId}
+            onSelectChat={(id) => setActiveChatId(id)}
+            onNewChat={handleNewChat}
+            onDeleteChat={handleDeleteChat}
+          />
         }
       />
 
