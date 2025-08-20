@@ -18,44 +18,22 @@ import { Sheet, Menu } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function ChatPage() {
-  const chatName = "Noor ai";
   const {
     message,
     setMessage,
     messages,
     showGreeting,
     setShowGreeting,
-    sendMessage: originalSendMessage,
+    sendMessage,
+    chatTitle, // 👈 from hook
   } = useChats();
   const { user, loading } = useUser();
   const scrollRef = useRef<HTMLDivElement | null>(null);
-  const [title, setTitle] = useState(chatName);
-  const [isTitleUpdated, setIsTitleUpdated] = useState(false);
   const [showSuggestions, setShowSuggestions] = useState(true);
-
-  const sendMessage = (msg: string) => {
-    if (showGreeting) setShowGreeting(false);
-    setShowSuggestions(false);
-    originalSendMessage(msg);
-  };
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
-
-  useEffect(() => {
-    if (!isTitleUpdated && messages.length > 0) {
-      const firstUserMessage = messages.find((msg) => msg.sender === "me");
-      if (firstUserMessage) {
-        const newTitle = firstUserMessage.message
-          .split(" ")
-          .slice(0, 5)
-          .join(" ");
-        setTitle(newTitle.charAt(0).toUpperCase() + newTitle.slice(1));
-        setIsTitleUpdated(true);
-      }
-    }
-  }, [messages, isTitleUpdated]);
 
   if (loading) return <p>Loading...</p>;
 
@@ -63,7 +41,7 @@ export default function ChatPage() {
     <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
       {/* Chat Header */}
       <ChatTitle
-        title={`${title}`}
+        title={chatTitle} // 👈 now AI sets it
         action={
           <Sheet>
             <SheetTrigger asChild>
@@ -85,7 +63,7 @@ export default function ChatPage() {
               </SheetHeader>
               <div className="mt-6 space-y-3">
                 <div className="p-3 bg-[#3d2072]/40 hover:bg-[#3d2072]/60 rounded-lg cursor-pointer transition-colors">
-                  {title}
+                  {chatTitle}
                 </div>
               </div>
             </SheetContent>
