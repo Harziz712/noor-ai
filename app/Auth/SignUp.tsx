@@ -155,7 +155,7 @@ const SignUp = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2 px-4 text-white bg-green-600 rounded-md"
+              className="w-full py-2 px-4 text-white bg-indigo-600 rounded-md"
             >
               {loading ? "Verifying..." : "Verify Email"}
             </button>

@@ -46,10 +46,10 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
 
   return (
     <div
-      className={`relative max-w-[75%] rounded-2xl px-4 py-3 text-sm ${
+      className={`relative max-w-[100%] rounded-2xl px-4 py-3 text-sm ${
         isMe
           ? "bg-[#2f185b] text-white rounded-br-none"
-          : " text-white/90 rounded-bl-none w-full"
+          : " text-white/90  w-full "
       }`}
     >
       {/* Message */}
