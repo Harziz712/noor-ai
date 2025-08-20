@@ -1,102 +1,164 @@
 "use client";
 
-import useInput, { InputProp } from "@/hooks/useInput";
-import { Paperclip, Mic, Send } from "lucide-react";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { Send, Mic, StopCircle } from "lucide-react";
 
 interface ChatInputProps {
-  className?: string;
   message: string;
-  setMessage: (msg: string) => void;
+  setMessage: (val: string) => void;
   sendMessage: (msg: string) => void;
+  className?: string;
 }
 
-const ChatInput = ({
-  className,
+const ChatInput: React.FC<ChatInputProps> = ({
   message,
   setMessage,
   sendMessage,
-}: ChatInputProps) => {
-  const inputRef = useRef<HTMLInputElement>(null);
+  className = "",
+}) => {
+  const [isRecording, setIsRecording] = useState(false);
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const [audioChunks, setAudioChunks] = useState<Blob[]>([]);
+  const [transcribing, setTranscribing] = useState(false);
 
-  useEffect(() => {
-    inputRef.current?.focus(); // Auto-focus input on page load
-  }, []);
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+const animationRef = useRef<number | null>(null);
 
-  const {
-    isRecording,
-    inputMessage,
-   setInputMessage,
-    handleSend,
-    handleKeyDown,
-    handleVoiceInput,
-    fileInputRef,
-    handleFileUpload,
-    handlePaperclipClick,
-  } = useInput({ message, setMessage, sendMessage });
+
+  // 🎙️ Start Recording
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks: Blob[] = [];
+
+      recorder.ondataavailable = (e) => {
+        if (e.data.size > 0) chunks.push(e.data);
+      };
+
+      recorder.onstop = async () => {
+        setAudioChunks(chunks);
+        transcribeAudio(new Blob(chunks, { type: "audio/webm" }));
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+      setIsRecording(true);
+      drawWaveform(stream);
+    } catch (err) {
+      console.error("Mic error:", err);
+    }
+  };
+
+  // 🛑 Stop Recording
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      mediaRecorder.stream.getTracks().forEach((track) => track.stop());
+    }
+    setIsRecording(false);
+    cancelAnimationFrame(animationRef.current!);
+  };
+
+  // 📊 Live Waveform
+  const drawWaveform = (stream: MediaStream) => {
+    const audioCtx = new AudioContext();
+    const source = audioCtx.createMediaStreamSource(stream);
+    const analyser = audioCtx.createAnalyser();
+    source.connect(analyser);
+    analyser.fftSize = 256;
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d")!;
+
+    const draw = () => {
+      animationRef.current = requestAnimationFrame(draw);
+      analyser.getByteTimeDomainData(dataArray);
+
+      ctx.fillStyle = "#1f0932";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#9f7aea"; // Purple accent
+      ctx.beginPath();
+
+      const sliceWidth = (canvas.width * 1.0) / bufferLength;
+      let x = 0;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const v = dataArray[i] / 128.0;
+        const y = (v * canvas.height) / 2;
+
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+
+        x += sliceWidth;
+      }
+      ctx.lineTo(canvas.width, canvas.height / 2);
+      ctx.stroke();
+    };
+
+    draw();
+  };
+
+  // 🧠 Fake transcription (replace with API if needed)
+  const transcribeAudio = async (audioBlob: Blob) => {
+    setTranscribing(true);
+    // TODO: Send `audioBlob` to an API like Whisper/OpenAI/Gemini
+    setTimeout(() => {
+      setMessage("Hello, this is a test transcription.");
+      setTranscribing(false);
+    }, 1500);
+  };
+
+  const handleSend = () => {
+    if (message.trim()) {
+      sendMessage(message);
+      setMessage("");
+    }
+  };
 
   return (
     <div
-      className={`flex items-center py-4 px-3 gap-2 w-full max-w-full bg-transparent backdrop-blur-sm ${className}`}
+      className={`flex items-center gap-2 p-3 bg-[#2a0a44] border-t border-white/10 ${className}`}
     >
-      <div className="flex items-center gap-3 w-full rounded-full bg-[#3d2072] hover:bg-[#4c2d92] transition px-4 py-4">
-        {/* 📎 File Upload Button */}
-        <button
-          type="button"
-          onClick={handlePaperclipClick}
-          className="text-white/70 hover:text-white"
-        >
-          <Paperclip className="w-5 h-5" />
-          <input
-            type="file"
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handleFileUpload}
-            className="hidden"
-          />
-        </button>
+      {/* Input */}
+      <input
+        type="text"
+        value={message}
+        onChange={(e) => setMessage(e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        placeholder={transcribing ? "Transcribing..." : "Type your message..."}
+        className="flex-1 bg-transparent text-white placeholder-white/50 focus:outline-none text-sm"
+      />
 
-        {/* 💬 Input Box */}
-        <input
-          ref={inputRef}
-          type="text"
-          value={inputMessage}
-          onChange={(e) => setInputMessage(e.target.value)}
-          onKeyDown={handleKeyDown}
-          placeholder={isRecording ? "Listening..." : "Ask me anything..."}
-          className={`flex-1 bg-transparent outline-none text-white text-sm placeholder-white/60 transition-all duration-300 ${
-            inputMessage ? "placeholder-opacity-0" : "placeholder-opacity-100"
-          }`}
-        />
+      {/* Mic Button + Waveform */}
+      <div className="flex items-center gap-2">
+        {isRecording ? (
+          <>
+            <canvas ref={canvasRef} width={60} height={24} className="rounded bg-black/30" />
+            <button onClick={stopRecording} className="p-2 rounded-full bg-red-600">
+              <StopCircle size={18} className="text-white" />
+            </button>
+          </>
+        ) : (
+          <button onClick={startRecording} className="p-2 rounded-full bg-purple-600">
+            <Mic size={18} className="text-white" />
+          </button>
+        )}
 
-        {/* 🎙️ Voice Button */}
+        {/* Send Button */}
         <button
-          onClick={handleVoiceInput}
-          className={`text-white/70 hover:text-white relative ${
-            isRecording ? "animate-bounce text-green-400" : ""
-          }`}
+          onClick={handleSend}
+          className="p-2 rounded-full bg-purple-700 hover:bg-purple-800"
         >
-          <Mic className="w-5 h-5" />
-          {isRecording && (
-            <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs text-white animate-pulse">
-              Listening...
-            </span>
-          )}
+          <Send size={18} className="text-white" />
         </button>
       </div>
-
-      {/* 📤 Send Button */}
-      <button
-        onClick={handleSend}
-        disabled={!inputMessage.trim()}
-        className={`p-3 rounded-full transition text-white ${
-          inputMessage.trim()
-            ? "bg-[#5e2ea3] hover:bg-[#7741cb]"
-            : "bg-[#5e2ea3]/40 cursor-not-allowed"
-        }`}
-      >
-        <Send className="w-5 h-5" />
-      </button>
     </div>
   );
 };

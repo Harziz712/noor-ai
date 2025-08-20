@@ -66,14 +66,14 @@ const NoorLoader = () => {
           >
             <img src="/NoorLogo.png" alt="Noor AI Loader" width={128} height={128} />
           </motion.div>
-          <motion.p
+          {/* <motion.p
             className="text-white mt-6 text-sm tracking-wide opacity-80"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3, duration: 0.8 }}
           >
             Noor AI is thinking...
-          </motion.p>
+          </motion.p> */}
         </motion.div>
       )}
     </AnimatePresence>

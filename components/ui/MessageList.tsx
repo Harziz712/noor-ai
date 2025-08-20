@@ -6,27 +6,14 @@ import ChatSuggestions from "@/components/ui/ChatInputSuggestions";
 import ChatMessage from "@/components/ui/ChatMessage";
 import ChatTitle from "@/components/ui/ChatTitle";
 import MessageWall from "@/components/ui/MessageWall";
-import {
-  SheetTrigger,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-} from "@/components/ui/sheet";
+import { SheetTrigger, SheetContent, SheetHeader, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 import useChats from "@/hooks/useChat";
 import { Sheet, Menu } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 
 export default function ChatPage() {
   const chatName = "Noor ai";
-  const {
-    message,
-    setMessage,
-    messages,
-    showGreeting,
-    setShowGreeting,
-    sendMessage: originalSendMessage,
-  } = useChats();
+  const { message, setMessage, messages, showGreeting, setShowGreeting, sendMessage: originalSendMessage } = useChats();
   const { user, loading } = useUser();
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const [title, setTitle] = useState(chatName);
@@ -47,10 +34,7 @@ export default function ChatPage() {
     if (!isTitleUpdated && messages.length > 0) {
       const firstUserMessage = messages.find((msg) => msg.sender === "me");
       if (firstUserMessage) {
-        const newTitle = firstUserMessage.message
-          .split(" ")
-          .slice(0, 5)
-          .join(" ");
+        const newTitle = firstUserMessage.message.split(" ").slice(0, 5).join(" ");
         setTitle(newTitle.charAt(0).toUpperCase() + newTitle.slice(1));
         setIsTitleUpdated(true);
       }
@@ -61,7 +45,6 @@ export default function ChatPage() {
 
   return (
     <main className="flex flex-col h-screen relative text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
-      {/* Chat Header */}
       <ChatTitle
         title={`${title}`}
         action={
@@ -93,12 +76,8 @@ export default function ChatPage() {
         }
       />
 
-      {/* Chat Body */}
       <div className="flex-1 px-2 pb-24 h-screen overflow-auto">
-        <MessageWall
-          showGreeting={showGreeting}
-          user={`${user?.user_metadata?.full_name || user?.email}`}
-        />
+        <MessageWall showGreeting={showGreeting} user={`${user?.user_metadata?.full_name || user?.email}`}/>
         {messages.map((msg, idx) => (
           <ChatMessage
             key={idx}
@@ -108,24 +87,21 @@ export default function ChatPage() {
             isTyping={msg.message === "Typing..."}
           />
         ))}
-
-        {/* Suggestions */}
         <div className="w-full flex justify-center">
           <div className="md:pt-50 md:w-[50%]">
             <ChatSuggestions
-  visible={showSuggestions && messages.length === 0 && message.length === 0}
-  onSuggestionClick={(text) => {
-    setMessage(text);
-    setShowSuggestions(false);
-  }}
-  className="text-center justify-center"
-/>
+              visible={showSuggestions && message.length === 0}
+              onSuggestionClick={(text) => {
+                setMessage(text);
+                setShowSuggestions(false);
+              }}
+              className="text-center justify-center"
+            />
           </div>
         </div>
         <div ref={scrollRef} />
       </div>
 
-      {/* Chat Input */}
       <ChatInput
         className="fixed bottom-0 left-0 right-0"
         message={message}
