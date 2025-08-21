@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { Message } from "@/data/interfaces";
 import genAI from "@/lib/gemini";
 
@@ -7,55 +7,13 @@ const useChats = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showGreeting, setShowGreeting] = useState(true);
-  const [chatTitle, setChatTitle] = useState<string>("Noor AI");
-  const [isRecording, setIsRecording] = useState(false);
-
-  const recognitionRef = useRef<SpeechRecognition | null>(null);
+  const [chatTitle, setChatTitle] = useState<string>("Noor AI"); // default
 
   const now = () =>
-    new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-
-  // 🔹 Speech-to-text (Web Speech API for free)
-  const startRecording = () => {
-    if (!("webkitSpeechRecognition" in window || "SpeechRecognition" in window)) {
-      alert("Speech recognition not supported in this browser.");
-      return;
-    }
-
-    const SpeechRecognition =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.interimResults = true;
-    recognition.continuous = true;
-
-    recognition.onresult = (event: SpeechRecognitionEvent) => {
-      let transcript = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        transcript += event.results[i][0].transcript;
-      }
-      setMessage(transcript);
-    };
-
-    recognition.onerror = (event) => {
-      console.error("Speech recognition error:", event.error);
-      setIsRecording(false);
-    };
-
-    recognition.onend = () => {
-      setIsRecording(false);
-    };
-
-    recognitionRef.current = recognition;
-    recognition.start();
-    setIsRecording(true);
-  };
-
-  const stopRecording = () => {
-    recognitionRef.current?.stop();
-    setIsRecording(false);
-  };
+    new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    });
 
   // 🔹 Ask Gemini for a chat title suggestion
   const generateChatTitle = async (userMessage: string) => {
@@ -95,11 +53,13 @@ const useChats = () => {
       { sender: "other", message: "Typing...", time: now(), isMoneyTransfer: false },
     ]);
 
+    // 🔹 If first user message → generate title
     if (messages.filter((m) => m.sender === "me").length === 0) {
       generateChatTitle(newMessage);
     }
 
     try {
+      // Safeguard check
       const lowerMsg = newMessage.toLowerCase();
       if (
         lowerMsg.includes("creator") ||
@@ -189,10 +149,7 @@ Always be helpful, respectful, and human-friendly.`,
     isTyping,
     showGreeting,
     setShowGreeting,
-    chatTitle,
-    isRecording,
-    startRecording,
-    stopRecording,
+    chatTitle, // 🔹 expose title
   };
 };
 

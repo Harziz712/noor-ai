@@ -90,6 +90,7 @@ const Login = () => {
                             {loading ? 'Logging in...' : 'Log in'}
                         </button>
                     </div>
+                <p className='text-center'>Don't have an account ? <a className='text-indigo-600' href='/signup'>Register</a></p>
                 </form>
             </div>
         </div>

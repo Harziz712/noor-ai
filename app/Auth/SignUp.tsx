@@ -108,38 +108,59 @@ const SignUp = () => {
 
   return (
     <div className="flex items-center justify-center bg-gray-50 ">
-      <div className="max-w-md w-full space-y-8 p-8 bg-white rounded-lg shadow-md">
-        <h2 className="text-center text-2xl font-extrabold text-gray-900">
+      <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-md">
+        <h2 className="text-center text-2xl font-bold text-gray-900">
           {step === "signup" ? "Create your account" : "Verify your email"}
         </h2>
+        <p className="text-center text-sm">Get access to all the cool features on Noor </p>
 
         {step === "signup" ? (
           <form className="mt-8 space-y-6" onSubmit={handleSignup}>
             <div className="space-y-4">
+              <div>
+                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                            Username
+                 </label>
               <input
                 type="text"
                 name="username"
                 className="w-full px-3 py-2 border rounded-md"
-                placeholder="Username"
+                placeholder="harziiz_dev"
               />
+              </div>
+                  <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                            Email address
+                 </label>
               <input
                 type="email"
                 name="email"
                 className="w-full px-3 py-2 border rounded-md"
-                placeholder="Email address"
+                placeholder="noor@gmail.com"
               />
+              </div>
+                  <div>
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                            Password
+                 </label>
               <input
                 type="password"
                 name="password"
                 className="w-full px-3 py-2 border rounded-md"
                 placeholder="Password"
               />
+              </div>
+                       <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
+                          Confirm Password
+                 </label>
               <input
                 type="password"
                 name="confirmPassword"
                 className="w-full px-3 py-2 border rounded-md"
                 placeholder="Confirm Password"
               />
+              </div>
             </div>
             <button
               type="submit"

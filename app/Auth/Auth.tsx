@@ -14,7 +14,7 @@ export default function Auth() {
         <div className="flex items-center justify-center min-h-screen bg-slate-50">
             <Card className="w-[400px]">
                 <CardHeader>
-                    <CardTitle className="text-2xl text-center">Welcome</CardTitle>
+                    {/* <CardTitle className="text-2xl text-center">Welcome</CardTitle> */}
                 </CardHeader>
                 <CardContent>
                     <Tabs defaultValue="login" className="w-full">
