@@ -4,6 +4,7 @@ import OtpInput from "@/components/OtpInput";
 import supabase from "@/lib/supabase";
 import React, { useState } from "react";
 import { toast } from "sonner";
+import { Eye, EyeOff } from "lucide-react";
 
 const SignUp = () => {
   const [loading, setLoading] = useState(false);
@@ -12,6 +13,10 @@ const SignUp = () => {
   const [fullName, setFullName] = useState("");
   const [password, setPassword] = useState("");
   const [otp, setOtp] = useState("");
+
+  // separate toggle states
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Step 1: Signup
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,13 +41,12 @@ const SignUp = () => {
       return;
     }
 
-    // Create the user (no auto login, just send OTP email)
     const { error } = await supabase.auth.signUp({
       email: emailValue,
       password: pass,
       options: {
-        emailRedirectTo: undefined, // no redirect
-        data: { full_name: username }, // store username in user metadata
+        emailRedirectTo: undefined,
+        data: { full_name: username },
       },
     });
 
@@ -74,7 +78,7 @@ const SignUp = () => {
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token: otp,
-      type: "signup", // ✅ correct type for email sign-up OTP
+      type: "signup",
     });
 
     if (error) {
@@ -83,10 +87,8 @@ const SignUp = () => {
       return;
     }
 
-    // ✅ Only insert profile after verification
     if (data?.user) {
       const { id } = data.user;
-
       const { error: profileError } = await supabase
         .from("profiles")
         .insert({
@@ -107,61 +109,103 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex items-center justify-center bg-gray-50 ">
+    <div className="flex items-center justify-center bg-gray-50">
       <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-md">
         <h2 className="text-center text-2xl font-bold text-gray-900">
           {step === "signup" ? "Create your account" : "Verify your email"}
         </h2>
-        <p className="text-center text-sm">Get access to all the cool features on Noor </p>
+        <p className="text-center text-sm">
+          Get access to all the cool features on Noor
+        </p>
 
         {step === "signup" ? (
           <form className="mt-8 space-y-6" onSubmit={handleSignup}>
             <div className="space-y-4">
               <div>
-                <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                            Username
-                 </label>
-              <input
-                type="text"
-                name="username"
-                className="w-full px-3 py-2 border rounded-md"
-                placeholder="harziiz_dev"
-              />
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Username
+                </label>
+                <input
+                  type="text"
+                  name="username"
+                  className="w-full px-3 py-2 border rounded-md"
+                  placeholder="harziiz_dev"
+                  required
+                />
               </div>
-                  <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                            Email address
-                 </label>
-              <input
-                type="email"
-                name="email"
-                className="w-full px-3 py-2 border rounded-md"
-                placeholder="noor@gmail.com"
-              />
+
+              <div>
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Email address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  className="w-full px-3 py-2 border rounded-md"
+                  placeholder="noor@gmail.com"
+                  required
+                />
               </div>
-                  <div>
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                            Password
-                 </label>
-              <input
-                type="password"
-                name="password"
-                className="w-full px-3 py-2 border rounded-md"
-                placeholder="Password"
-              />
+
+              <div className="relative">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Password
+                </label>
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  className="w-full px-3 py-2 border rounded-md"
+                  placeholder="Password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
               </div>
-                       <div>
-                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                          Confirm Password
-                 </label>
-              <input
-                type="password"
-                name="confirmPassword"
-                className="w-full px-3 py-2 border rounded-md"
-                placeholder="Confirm Password"
-              />
+
+              <div className="relative">
+                <label
+                  htmlFor="confirmPassword"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Confirm Password
+                </label>
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  className="w-full px-3 py-2 border rounded-md"
+                  placeholder="Confirm Password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowConfirmPassword(!showConfirmPassword)
+                  }
+                  className="absolute right-3 top-9 text-gray-500 hover:text-gray-700"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
               </div>
             </div>
+
             <button
               type="submit"
               disabled={loading}

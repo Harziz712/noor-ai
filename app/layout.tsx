@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/context/AuthProvider";
 import { Toaster } from "sonner";
 import { Dialog } from "@radix-ui/react-dialog";
-
+import ClientLayout from "@/components/ClientLayout";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,7 +22,6 @@ export const metadata: Metadata = {
     "Chat smarter with Noor AI – a powerful, responsive chat UI built with Next.js and Tailwind CSS. Features real-time responses, voice output, and seamless user experience.",
 };
 
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,14 +32,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider >
+        <AuthProvider>
           <Dialog>
-             {children}
+            <ClientLayout>{children}</ClientLayout>
           </Dialog>
-         
         </AuthProvider>
-        
-        <Toaster/>
+        <Toaster />
       </body>
     </html>
   );
