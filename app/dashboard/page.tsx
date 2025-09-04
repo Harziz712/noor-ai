@@ -23,7 +23,7 @@ export default function Dashboard() {
   if (loading) return <p>Loading...</p>;
 
   return (
-    <div className="min-h-screen flex flex-col gap-4 items-center justify-center bg-gray-100">
+    <div className="min-h-screen flex flex-col gap-4 items-center justify-center bg-gray-100 text-white bg-gradient-to-b from-[#1f0932] via-[#1a0033] to-purple-700">
       <h1 className="text-xl font-bold">
         Welcome {user?.user_metadata?.full_name || user?.email} 👋
       </h1>

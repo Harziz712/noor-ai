@@ -8,7 +8,7 @@ const BottomNav = () => {
   const router = useRouter();
 
   const navItems = [
-    { id: "home", label: "Home", icon: <Home size={22} />, path: "/" },
+    { id: "home", label: "Home", icon: <Home size={22} />, path: "/dashboard" },
     { id: "gallery", label: "Gallery", icon: <Image size={22} />, path: "/gallery" },
     { id: "chat", label: "Chat", icon: <MessageCircle size={22} />, path: "/chat" },
     { id: "history", label: "History", icon: <Clock size={22} />, path: "/history" },
