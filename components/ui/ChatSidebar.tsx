@@ -8,7 +8,7 @@ import {
   SheetTitle,
   SheetDescription,
 } from "@/components/ui/sheet";
-import { Plus, Menu, Trash2 } from "lucide-react";
+import { Plus, Menu, Trash2, MessageCirclePlus, MessageCircleCode, MessageCircleIcon } from "lucide-react";
 import React from "react";
 
 interface ChatSidebarProps {
@@ -38,7 +38,7 @@ export default function ChatSidebar({
       {/* Sidebar content */}
       <SheetContent
         side="left"
-        className="w-[300px] sm:w-[400px] bg-[#1f0932] text-white border-none shadow-xl px-5"
+        className="w-[280px] sm:w-[400px] bg-[#1f0932] text-white border-none shadow-xl px-5"
       >
         <SheetHeader>
           <SheetTitle className="text-lg font-semibold tracking-wide text-white">
@@ -49,16 +49,22 @@ export default function ChatSidebar({
           </SheetDescription>
         </SheetHeader>
 
-        {/* New Chat button */}
+<div className="grid w-full gap-2  mt-4">
         <button
           onClick={onNewChat}
-          className="mt-4 flex items-center gap-2 px-3 py-2 bg-[#3d2072] hover:bg-[#5e2ea3] w-[35%] rounded-lg transition-colors  text-sm font-medium"
+          className="flex  items-center gap-2 px-3 py-2 bg-[#3d2072] hover:bg-[#5e2ea3] w-[35%] rounded-lg transition-colors  text-sm font-medium"
         >
-          <Plus size={16} /> New Chat
+          <MessageCirclePlus size={16} /> New Chat
         </button>
-
+            <button
+          onClick={onNewChat}
+          className=" flex items-center gap-2 px-3 py-2 bg-[#3d2072] hover:bg-[#5e2ea3] w-[35%] rounded-lg transition-colors  text-sm font-medium"
+        >
+          <MessageCircleIcon size={16} /> Saved Chat
+        </button>
+</div>
         {/* Chat list */}
-        <div className="mt-6 space-y-3">
+        <div className="mt-6 space-y-3 border-t-2 border-white/10 pt-4 overflow-y-auto max-h-[70vh]">
           {chats.length === 0 ? (
             <p className="text-sm text-white/50">No chats yet</p>
           ) : (
