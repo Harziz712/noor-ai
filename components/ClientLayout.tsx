@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { AuthProvider } from "@/context/AuthProvider";
 import BottomNav from "@/components/ui/BottomNav";
 
 export default function ClientLayout({
@@ -17,9 +18,9 @@ export default function ClientLayout({
   );
 
   return (
-    <>
+      <AuthProvider>
       {children}
       {shouldShowNav && <BottomNav />}
-    </>
+      </AuthProvider>
   );
 }

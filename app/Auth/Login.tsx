@@ -34,7 +34,7 @@ const Login = () => {
       toast.error(error.message || "Login failed. Please try again.");
     } else {
       toast.success("Login successful! Welcome back!");
-      router.push("/chat"); // redirect after login
+      router.push("/dashboard"); // redirect after login
     }
 
     setLoading(false);
